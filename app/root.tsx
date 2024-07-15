@@ -6,11 +6,16 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+import MainNavigation from "~/components/MainNavigation";
 import type { LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap",
+  },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -22,7 +27,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="font-body pt-2 pr-4 pb-4 pl-4 md:pt-4 md:pr-16 md:pb-16 md:pl-16">
+        <header>
+          <MainNavigation />
+        </header>
         {children}
         <ScrollRestoration />
         <Scripts />
