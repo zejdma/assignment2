@@ -1,6 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import FeaturedProduct from "~/components/FeaturedProduct";
+import ProductList from "~/components/ProductList";
 import { getStoredProducts } from "~/data/products";
 import { Product } from "~/types/product";
 export const meta: MetaFunction = () => {
@@ -17,11 +18,15 @@ export default function Index() {
   return (
     <div className="my-8 space-y-8 ">
       {getFeaturedProduct(featuredProduct)}
+
       <div className="divide-y-4 divide-separator">
         <div></div>
         <div></div>
       </div>
-      <div className="flex items-center mb-4">
+
+      <ProductList products={products} />
+
+      {/* <div className="flex items-center mb-4">
         <input
           id="default-checkbox"
           type="checkbox"
@@ -34,7 +39,7 @@ export default function Index() {
         >
           Default checkbox
         </label>
-      </div>
+      </div> */}
     </div>
   );
 }
