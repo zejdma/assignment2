@@ -55,6 +55,12 @@ export default function FeaturedProduct({
         <p className="text-fontPrimary text-xl font-bold">Details</p>
         <div className="space-y-0">
           <p className="text-fontSecondary text-lg font-normal">
+            {"Price: " +
+              featuredProduct?.price +
+              " " +
+              featuredProduct?.currency}
+          </p>
+          <p className="text-fontSecondary text-lg font-normal">
             {"Resolution: " +
               featuredProduct?.details?.dimmentions.width +
               " x " +
