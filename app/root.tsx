@@ -11,7 +11,7 @@ import MainNavigation from "~/components/MainNavigation";
 import type { LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
 import { Product } from "./types/product";
-import { getStoredCart } from "./data/cart";
+import { storeCart, getStoredCart } from "./data/cart";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -23,7 +23,6 @@ export const links: LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const cart = useLoaderData<Product[]>();
-  console.log(cart);
   return (
     <html lang="en">
       <head>
@@ -47,7 +46,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return <Outlet />;
 }
+
 export async function loader() {
   const products = await getStoredCart();
   return products;
+}
+
+export async function action({ cartItem }: { cartItem: Product | undefined }) {
+  if (cartItem === undefined) {
+    await storeCart("");
+  } else {
+    const existingCart = await getStoredCart();
+    const updatedNotes = existingCart.concat(cartItem);
+    await storeCart(updatedNotes);
+  }
 }

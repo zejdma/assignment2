@@ -8,3 +8,7 @@ export async function getStoredCart() {
   const storedCart = data.products ?? [];
   return storedCart;
 }
+
+export function storeCart(cart) {
+  return fs.writeFile("cart.json", JSON.stringify({ products: cart || [] }));
+}

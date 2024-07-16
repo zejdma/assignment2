@@ -12,7 +12,6 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const products = useLoaderData<Product[]>();
-  console.log(products);
   const featuredProduct = products.find((product) => product.featured === true);
 
   return (
