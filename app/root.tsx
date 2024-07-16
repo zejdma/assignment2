@@ -4,11 +4,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 
 import MainNavigation from "~/components/MainNavigation";
 import type { LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
+import { Product } from "./types/product";
+import { getStoredCart } from "./data/cart";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -19,6 +22,8 @@ export const links: LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const cart = useLoaderData<Product[]>();
+  console.log(cart);
   return (
     <html lang="en">
       <head>
@@ -29,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-body pt-2 pr-4 pb-4 pl-4 md:pt-4 md:pr-16 md:pb-16 md:pl-16">
         <header>
-          <MainNavigation />
+          <MainNavigation cart={cart} />
         </header>
         {children}
         <ScrollRestoration />
@@ -41,4 +46,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return <Outlet />;
+}
+export async function loader() {
+  const products = await getStoredCart();
+  return products;
 }
