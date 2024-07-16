@@ -1,6 +1,8 @@
 import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { getStoredProducts } from "~/data/products.js";
+import FeaturedProduct from "~/components/FeaturedProduct";
+import { getStoredProducts } from "~/data/products";
+import { Product } from "~/types/product";
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -9,24 +11,15 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const products: [Product] = useLoaderData();
-  const featuredProduct: Product | undefined = products.find(
-    (product) => product.featured === true
-  );
+  const products = useLoaderData<Product[]>();
+  const featuredProduct = products.find((product) => product.featured === true);
 
   return (
-    <>
-      <h1>{featuredProduct?.name || ""}</h1>
-      {typeof featuredProduct != "undefined"
-        ? FeaturedImage(featuredProduct)
-        : null}
-      <h1>{products.length}</h1>
-      <div>
-        {products?.map((product) => (
-          <li key={product.name}>
-            {product.details?.description || "No description"}
-          </li>
-        ))}
+    <div className="my-8 space-y-8 ">
+      {getFeaturedProduct(featuredProduct)}
+      <div className="divide-y-4 divide-separator">
+        <div></div>
+        <div></div>
       </div>
       <div className="flex items-center mb-4">
         <input
@@ -42,27 +35,13 @@ export default function Index() {
           Default checkbox
         </label>
       </div>
-    </>
+    </div>
   );
 }
 
-function FeaturedImage(featuredProduct: Product | undefined) {
-  if (typeof featuredProduct != "undefined") {
-    if (typeof featuredProduct.image === "string") {
-      return (
-        <img
-          src={featuredProduct.image}
-          alt={featuredProduct.name + " image"}
-        ></img>
-      );
-    } else {
-      return (
-        <img
-          src={featuredProduct.image.src}
-          alt={featuredProduct.image.alt}
-        ></img>
-      );
-    }
+function getFeaturedProduct(featuredProduct?: Product) {
+  if (featuredProduct !== undefined) {
+    return <FeaturedProduct featuredProduct={featuredProduct} />;
   }
 }
 
@@ -70,23 +49,3 @@ export async function loader() {
   const products = await getStoredProducts();
   return products;
 }
-
-type Product = {
-  name: string;
-  category: string;
-  price: number;
-  currency: string;
-  image: string | { src: string; alt: string };
-  bestseller: boolean;
-  featured: boolean;
-  details?: {
-    dimmentions: { width: number; height: number };
-    size: number;
-    description: string;
-    recommendations: [
-      { src: string; alt: string },
-      { src: string; alt: string },
-      { src: string; alt: string }
-    ];
-  };
-};
