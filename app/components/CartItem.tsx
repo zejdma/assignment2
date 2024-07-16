@@ -2,12 +2,18 @@ import { Product } from "~/types/product";
 
 export default function CartItem({ cartItem }: { cartItem: Product }) {
   return (
-    <div>
-      <p>{cartItem.name}</p>
+    <div
+      className="flex justify-between 
+                items-center gap-4"
+    >
+      <div>
+        <p className="text-fontPrimary font-bold text-xl">{cartItem.name}</p>
 
-      <p>{cartItem.price + " " + cartItem.currency}</p>
-
-      {cartItemImage(cartItem)}
+        <p className="text-fontSecondary font-normal text-3xl">
+          {cartItem.price + " " + cartItem.currency}
+        </p>
+      </div>
+      <div className="w-1/3">{cartItemImage(cartItem)}</div>
     </div>
   );
 }

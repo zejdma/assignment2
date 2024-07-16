@@ -34,7 +34,7 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
             </svg>
           </button>
 
-          <div className="">{getCart(showCart, cart)}</div>
+          <div className="">{getCart(showCart, setShowCart, cart)}</div>
         </div>
       </div>
       <hr />
@@ -42,8 +42,14 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
   );
 }
 
-function getCart(showCart: boolean, cart: Product[]) {
+function getCart(
+  showCart: boolean,
+  setShowCart: React.Dispatch<React.SetStateAction<boolean>>,
+  cart: Product[]
+) {
   if (showCart) {
-    return <CartDropdown cart={cart} />;
+    return (
+      <CartDropdown showCart={showCart} setShowCart={setShowCart} cart={cart} />
+    );
   }
 }
