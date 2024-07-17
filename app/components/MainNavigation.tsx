@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CartDropdown from "./CartDropdown";
+import CartDropdown from "./CartDrawer";
 import { Product } from "~/types/product";
 
 export default function MainNavigation({ cart }: { cart: Product[] }) {

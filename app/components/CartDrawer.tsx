@@ -3,7 +3,7 @@ import CartItem from "./CartItem";
 import Button from "./Button";
 import { ButtonVariant } from "~/enums/buttonVariant";
 
-export default function CartDropdown({
+export default function CartDrawer({
   showCart,
   setShowCart,
   cart,
@@ -13,12 +13,9 @@ export default function CartDropdown({
   cart: Product[];
 }) {
   return (
-    <>
-      <div className="z-10 absolute left-0 right-0 bottom-0 top-16 bg-background py-4 px-4 md:border-solid md:border-4 md:border-separator space-y-8">
-        <div
-          className="flex justify-between 
-                items-center"
-        >
+    <div>
+      <div className="z-20 fixed top-14 left-0 h-screen w-screen bg-background shadow-2xl">
+        <div className="p-4 pb-2 flex justify-between items-center">
           <p className="text-fontPrimary font-bold text-3xl">Cart</p>
 
           <button
@@ -44,15 +41,13 @@ export default function CartDropdown({
           </button>
         </div>
 
-        {cart.map((cartItem) => (
-          <CartItem key={cartItem.name} cartItem={cartItem} />
-        ))}
+        <div className="p-4 pb-2">
+          {cart.map((cartItem) => (
+            <CartItem key={cartItem.name} cartItem={cartItem} />
+          ))}
+        </div>
 
-        <div>
-          <div className="divide-y-2 divide-separator">
-            <div></div>
-            <div></div>
-          </div>
+        <div className=" border-t-2 border-separator fixed bottom-0 w-screen flex justify-between gap-4 p-3">
           <Button
             variant={ButtonVariant.secondary}
             title="CLEAR"
@@ -60,6 +55,7 @@ export default function CartDropdown({
           />
         </div>
       </div>
-    </>
+      <div className="z-10 fixed top-0 left-0 h-screen w-screen bg-fontSecondary bg-opacity-50"></div>
+    </div>
   );
 }
