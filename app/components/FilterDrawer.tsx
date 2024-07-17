@@ -11,7 +11,7 @@ export default function FilterDrawer({
 }: {
   showFilter: boolean;
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
-  filter: ProductFilter[];
+  filter: ProductFilter;
 }) {
   return (
     <div>

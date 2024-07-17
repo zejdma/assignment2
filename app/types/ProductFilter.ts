@@ -1,9 +1,9 @@
 export type ProductFilter = {
   categories: string[];
-  priceRanges: priceRange[];
+  priceRanges: PriceRange[];
 };
 
-export type priceRange = {
-  from?: number;
-  to?: number;
+export type PriceRange = {
+  from: number | null;
+  to: number | null;
 };

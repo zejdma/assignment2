@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CartDropdown from "./CartDrawer";
 import { Product } from "~/types/product";
+import CartDrawer from "./CartDrawer";
 
 export default function MainNavigation({ cart }: { cart: Product[] }) {
   const [showCart, setShowCart] = useState(false);
@@ -49,7 +50,7 @@ function getCart(
 ) {
   if (showCart) {
     return (
-      <CartDropdown showCart={showCart} setShowCart={setShowCart} cart={cart} />
+      <CartDrawer showCart={showCart} setShowCart={setShowCart} cart={cart} />
     );
   }
 }

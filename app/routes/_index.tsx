@@ -1,9 +1,11 @@
 import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { useState } from "react";
 import FeaturedProduct from "~/components/FeaturedProduct";
 import ProductList from "~/components/ProductList";
 import { getStoredProducts } from "~/data/products";
 import { Product } from "~/types/product";
+import { ProductFilter } from "~/types/ProductFilter";
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -14,6 +16,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const products = useLoaderData<Product[]>();
   const featuredProduct = products.find((product) => product.featured === true);
+  const [filter, setFilter] = useState({ categories: [], priceRanges: [] });
 
   return (
     <div className="my-8 space-y-8 ">
@@ -24,7 +27,7 @@ export default function Index() {
         <div></div>
       </div>
 
-      <ProductList products={products} />
+      <ProductList products={products} filter={filter} />
 
       {/* <div className="flex items-center mb-4">
         <input
