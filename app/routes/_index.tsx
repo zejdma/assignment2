@@ -15,6 +15,9 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const products = useLoaderData<Product[]>();
+  const productsCategories = [
+    ...new Set(products.map((product) => product.category)),
+  ];
   const featuredProduct = products.find((product) => product.featured === true);
   const [filter, setFilter] = useState({ categories: [], priceRanges: [] });
 
@@ -27,22 +30,11 @@ export default function Index() {
         <div></div>
       </div>
 
-      <ProductList products={products} filter={filter} />
-
-      {/* <div className="flex items-center mb-4">
-        <input
-          id="default-checkbox"
-          type="checkbox"
-          value=""
-          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-        />
-        <label
-          htmlFor="default-checkbox"
-          className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-        >
-          Default checkbox
-        </label>
-      </div> */}
+      <ProductList
+        products={products}
+        productsCategories={productsCategories}
+        filter={filter}
+      />
     </div>
   );
 }

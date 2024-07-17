@@ -8,9 +8,11 @@ import FilterDrawer from "./FilterDrawer";
 
 export default function ProductList({
   products,
+  productsCategories,
   filter,
 }: {
   products: Product[];
+  productsCategories: string[];
   filter: ProductFilter;
 }) {
   const [showFilter, setShowFilter] = useState(false);
@@ -45,7 +47,7 @@ export default function ProductList({
         </button>
       </div>
 
-      {getFilter(showFilter, setShowFilter, filter)}
+      {getFilter(showFilter, setShowFilter, filter, productsCategories)}
 
       {products.map((product) => (
         <ProductListItem key={product.name} product={product} />
@@ -96,7 +98,8 @@ export default function ProductList({
 function getFilter(
   showFilter: boolean,
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>,
-  filter: ProductFilter
+  filter: ProductFilter,
+  productsCategories: string[]
 ) {
   if (showFilter) {
     return (
@@ -104,6 +107,7 @@ function getFilter(
         showFilter={showFilter}
         setShowFilter={setShowFilter}
         filter={filter}
+        productsCategories={productsCategories}
       />
     );
   }
