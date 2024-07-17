@@ -4,8 +4,9 @@ import { useState } from "react";
 import FeaturedProduct from "~/components/FeaturedProduct";
 import ProductList from "~/components/ProductList";
 import { getStoredProducts } from "~/data/products";
+import { SortOptions } from "~/enums/sortOptions";
 import { Product } from "~/types/product";
-import { ProductFilter } from "~/types/ProductFilter";
+import { ProductFilter } from "~/types/productFilter";
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -15,11 +16,40 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const products = useLoaderData<Product[]>();
-  const productsCategories = [
-    ...new Set(products.map((product) => product.category)),
-  ];
   const featuredProduct = products.find((product) => product.featured === true);
-  const [filter, setFilter] = useState({ categories: [], priceRanges: [] });
+  const filterOptions: ProductFilter = {
+    categories: [...new Set(products.map((product) => product.category))],
+    priceRanges: [
+      {
+        from: 0,
+        to: 20,
+      },
+      {
+        from: 20,
+        to: 100,
+      },
+      {
+        from: 100,
+        to: 200,
+      },
+      {
+        from: 200,
+        to: null,
+      },
+    ],
+  };
+
+  const emptyFilter: ProductFilter = {
+    categories: [],
+    priceRanges: [],
+  };
+
+  const [activeFilter, setActiveFilter] = useState(emptyFilter);
+
+  const [sortSetting, setSortSetting] = useState({
+    sortOption: SortOptions.name,
+    asc: true,
+  });
 
   return (
     <div className="my-8 space-y-8 ">
@@ -32,8 +62,11 @@ export default function Index() {
 
       <ProductList
         products={products}
-        productsCategories={productsCategories}
-        filter={filter}
+        filterOptions={filterOptions}
+        activeFilter={activeFilter}
+        setActiveFilter={setActiveFilter}
+        sortSetting={sortSetting}
+        setSortSetting={setSortSetting}
       />
     </div>
   );

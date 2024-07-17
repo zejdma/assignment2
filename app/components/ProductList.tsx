@@ -3,17 +3,23 @@ import ProductListItem from "./ProductListItem";
 import { useState } from "react";
 import Button from "./Button";
 import { ButtonVariant } from "~/enums/buttonVariant";
-import { ProductFilter } from "~/types/ProductFilter";
+import { ProductFilter, SortSetting } from "~/types/productFilter";
 import FilterDrawer from "./FilterDrawer";
 
 export default function ProductList({
   products,
-  productsCategories,
-  filter,
+  filterOptions,
+  activeFilter,
+  setActiveFilter,
+  sortSetting,
+  setSortSetting,
 }: {
   products: Product[];
-  productsCategories: string[];
-  filter: ProductFilter;
+  filterOptions: ProductFilter;
+  activeFilter: ProductFilter;
+  setActiveFilter: React.Dispatch<React.SetStateAction<ProductFilter>>;
+  sortSetting: SortSetting;
+  setSortSetting: React.Dispatch<React.SetStateAction<SortSetting>>;
 }) {
   const [showFilter, setShowFilter] = useState(false);
 
@@ -47,7 +53,15 @@ export default function ProductList({
         </button>
       </div>
 
-      {getFilter(showFilter, setShowFilter, filter, productsCategories)}
+      {getFilter(
+        showFilter,
+        setShowFilter,
+        filterOptions,
+        activeFilter,
+        setActiveFilter,
+        sortSetting,
+        setSortSetting
+      )}
 
       {products.map((product) => (
         <ProductListItem key={product.name} product={product} />
@@ -98,16 +112,22 @@ export default function ProductList({
 function getFilter(
   showFilter: boolean,
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>,
-  filter: ProductFilter,
-  productsCategories: string[]
+  filterOptions: ProductFilter,
+  activeFilter: ProductFilter,
+  setActiveFilter: React.Dispatch<React.SetStateAction<ProductFilter>>,
+  sortSetting: SortSetting,
+  setSortSetting: React.Dispatch<React.SetStateAction<SortSetting>>
 ) {
   if (showFilter) {
     return (
       <FilterDrawer
         showFilter={showFilter}
         setShowFilter={setShowFilter}
-        filter={filter}
-        productsCategories={productsCategories}
+        filterOptions={filterOptions}
+        activeFilter={activeFilter}
+        setActiveFilter={setActiveFilter}
+        sortSetting={sortSetting}
+        setSortSetting={setSortSetting}
       />
     );
   }
