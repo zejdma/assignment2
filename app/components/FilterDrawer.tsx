@@ -54,7 +54,9 @@ export default function FilterDrawer({
 
         <div className="px-4 space-y-2">
           <p className="text-fontPrimary font-bold text-xl">Sort by</p>
-          <div className="px-2 ">{sortDropdown()}</div>
+          <div className="px-2 ">
+            {sortDropdown(sortSetting, setSortSetting)}
+          </div>
         </div>
 
         <div className="px-4 space-y-2">
@@ -84,7 +86,7 @@ export default function FilterDrawer({
           <Button
             variant={ButtonVariant.primary}
             title="SAVE"
-            onClick={() => console.log("Filter Save")}
+            onClick={() => setShowFilter(false)}
           />
         </div>
       </div>
@@ -171,7 +173,10 @@ function priceRangeCheckbox(priceRange: PriceRange) {
   );
 }
 
-function sortDropdown() {
+function sortDropdown(
+  sortSetting: SortSetting,
+  setSortSetting: React.Dispatch<React.SetStateAction<SortSetting>>
+) {
   const [isOpen, setIsOpen] = useState(false);
 
   function toggle() {
@@ -184,7 +189,8 @@ function sortDropdown() {
         className="px-5 py-2 cursor-pointer flex justify-between"
         onClick={toggle}
       >
-        Name
+        {sortSetting.sortOption}
+
         <img width={16} src="/public/icons/chevronDown.svg" />
       </div>
 
@@ -193,12 +199,22 @@ function sortDropdown() {
           id="dropdown"
           className="rounded border-solid border-2 border-separator bg-background  px-4 w-full z-30 absolute"
         >
-          <div onClick={toggle} className="cursor-pointer p-4">
-            {SortOptions.name}
-          </div>
-          <div onClick={toggle} className="cursor-pointer p-4">
-            {SortOptions.price}
-          </div>
+          {Object.values(SortOptions).map((option) => (
+            <div
+              key={option}
+              onClick={() => {
+                setSortSetting({
+                  sortOption: option,
+                  asc: sortSetting.asc,
+                });
+
+                setIsOpen(false);
+              }}
+              className="cursor-pointer p-4"
+            >
+              {option}
+            </div>
+          ))}
         </div>
       )}
     </div>
