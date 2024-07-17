@@ -48,6 +48,10 @@ export default function FilterDrawer({
           {productsCategories.map((category) => categoryCheckbox(category))}
         </div>
 
+        <div className="p-4 pb-2">
+          {productsCategories.map((category) => categoryCheckbox(category))}
+        </div>
+
         <div className=" border-t-2 border-separator fixed bottom-0 w-screen flex justify-between gap-4 p-3">
           <Button
             variant={ButtonVariant.secondary}
