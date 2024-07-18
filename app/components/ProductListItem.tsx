@@ -1,6 +1,7 @@
 import { Product } from "~/types/product";
 import Button from "./Button";
 import { ButtonVariant } from "~/enums/buttonVariant";
+import { Form } from "@remix-run/react";
 
 export default function ProductListItem({ product }: { product: Product }) {
   return (
@@ -11,11 +12,27 @@ export default function ProductListItem({ product }: { product: Product }) {
         {bestSellerBadge(product.bestseller)}
 
         <div className="absolute bottom-0 w-full">
-          <Button
-            variant={ButtonVariant.primary}
-            title="ADD TO CART"
-            onClick={() => console.log("Click on add to cart")}
-          />
+          <Form method="post" style={{ display: "inline" }}>
+            <input
+              type="hidden"
+              name="product"
+              value={JSON.stringify({
+                product,
+              })}
+            />
+            <Button
+              variant={ButtonVariant.primary}
+              title="ADD TO CART"
+              onClick={() => {
+                fetch("/", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    product,
+                  }),
+                });
+              }}
+            />
+          </Form>
         </div>
       </div>
       <div className="flex justify-between items-center">

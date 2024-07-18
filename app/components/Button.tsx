@@ -24,6 +24,7 @@ export default function Button({
         text-lg
         font-medium"
         onClick={onClick}
+        type="submit"
       >
         {title}
       </button>
@@ -46,6 +47,7 @@ export default function Button({
     border-fontPrimary
     "
         onClick={onClick}
+        type="submit"
       >
         {title}
       </button>

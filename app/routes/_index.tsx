@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import FeaturedProduct from "~/components/FeaturedProduct";
 import ProductList from "~/components/ProductList";
+import { getStoredCart, storeCart } from "~/data/cart";
 import { getStoredProducts } from "~/data/products";
 import { SortOptions } from "~/enums/sortOptions";
 import { Product } from "~/types/product";
@@ -49,4 +50,13 @@ function getFilterCategories(categories: string[]) {
     filterCategories.push({ category: category, selected: false });
   });
   return filterCategories;
+}
+
+export async function action({ request }: { request: Request }) {
+  const formData = await request.json();
+  const newProduct = Object.fromEntries(formData);
+
+  const existingCart = await getStoredCart();
+  const updatedCart = existingCart.concat(newProduct);
+  await storeCart(updatedCart);
 }

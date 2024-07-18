@@ -8,7 +8,7 @@ import {
 } from "@remix-run/react";
 
 import MainNavigation from "~/components/MainNavigation";
-import type { LinksFunction } from "@remix-run/node";
+import type { ActionFunctionArgs, LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
 import { Product } from "./types/product";
 import { storeCart, getStoredCart } from "./data/cart";
@@ -22,7 +22,9 @@ export const links: LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const cart = useLoaderData<Product[]>();
+  const cart = useLoaderData<typeof loader>();
+  console.log("cart");
+  console.log(cart);
   return (
     <html lang="en">
       <head>
@@ -48,16 +50,25 @@ export default function App() {
 }
 
 export async function loader() {
-  const products = await getStoredCart();
-  return products;
+  try {
+    const products = await getStoredCart();
+    return products;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-export async function action({ cartItem }: { cartItem: Product | undefined }) {
-  if (cartItem === undefined) {
+export async function action({ request }: ActionFunctionArgs) {
+  const body = await request.json();
+  if (body === undefined) {
     await storeCart("");
+    return null;
   } else {
     const existingCart = await getStoredCart();
-    const updatedNotes = existingCart.concat(cartItem);
-    await storeCart(updatedNotes);
+    const updatedCart = existingCart.concat(body);
+    console.log("updatedCart");
+    console.log(updatedCart);
+    await storeCart(updatedCart);
+    return null;
   }
 }
