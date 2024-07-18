@@ -35,7 +35,7 @@ export default function ProductList({ products }: { products: Product[] }) {
   });
 
   const getSortedProducts = () => {
-    return products.sort((a, b) => {
+    return filteredProducts.sort((a, b) => {
       switch (sortSetting.sortOption) {
         case SortOptions.name:
           return sortSetting.asc
