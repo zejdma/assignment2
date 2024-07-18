@@ -5,30 +5,52 @@ import Button from "./Button";
 import { ButtonVariant } from "~/enums/buttonVariant";
 import { ProductFilter, SortSetting } from "~/types/productFilter";
 import FilterDrawer from "./FilterDrawer";
+import { SortOptions } from "~/enums/sortOptions";
 
-interface PriceRange {
-  id: number;
-  label: string;
-  min: number;
-  max: number;
-}
-
-export default function ProductList({
-  products,
-  filterOptions,
-  activeFilter,
-  setActiveFilter,
-  sortSetting,
-  setSortSetting,
-}: {
-  products: Product[];
-  filterOptions: ProductFilter;
-  activeFilter: ProductFilter;
-  setActiveFilter: React.Dispatch<React.SetStateAction<ProductFilter>>;
-  sortSetting: SortSetting;
-  setSortSetting: React.Dispatch<React.SetStateAction<SortSetting>>;
-}) {
+export default function ProductList({ products }: { products: Product[] }) {
   const [showFilter, setShowFilter] = useState(false);
+
+  const [sortSetting, setSortSetting] = useState({
+    sortOption: SortOptions.name,
+    asc: true,
+  });
+
+  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [priceRangeFilter, setPriceRangeFilter] = useState<PriceRange | null>(
+    null
+  );
+
+  const allCategories = [
+    ...new Set(products.map((product) => product.category)),
+  ];
+
+  const filteredProducts = products.filter((product) => {
+    const categoryMatch =
+      categoryFilter.length === 0 || categoryFilter.includes(product.category);
+    const priceMatch =
+      !priceRangeFilter ||
+      (product.price >= priceRangeFilter.min &&
+        product.price <= priceRangeFilter.max);
+    return categoryMatch && priceMatch;
+  });
+
+  const getSortedProducts = () => {
+    return products.sort((a, b) => {
+      switch (sortSetting.sortOption) {
+        case SortOptions.name:
+          return sortSetting.asc
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
+        case SortOptions.name:
+          return sortSetting.asc ? a.price - b.price : b.price - a.price;
+        default:
+        case SortOptions.name:
+          return sortSetting.asc
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
+      }
+    });
+  };
 
   return (
     <div className="space-y-8">
@@ -47,17 +69,21 @@ export default function ProductList({
         </button>
       </div>
 
-      {getFilter(
-        showFilter,
-        setShowFilter,
-        filterOptions,
-        activeFilter,
-        setActiveFilter,
-        sortSetting,
-        setSortSetting
+      {showFilter && (
+        <FilterDrawer
+          showFilter={showFilter}
+          setShowFilter={setShowFilter}
+          allCategories={allCategories}
+          sortSetting={sortSetting}
+          setSortSetting={setSortSetting}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          priceRangeFilter={priceRangeFilter}
+          setPriceRangeFilter={setPriceRangeFilter}
+        />
       )}
 
-      {products.map((product) => (
+      {getSortedProducts().map((product) => (
         <ProductListItem key={product.name} product={product} />
       ))}
 
@@ -75,28 +101,4 @@ export default function ProductList({
       </div>
     </div>
   );
-}
-
-function getFilter(
-  showFilter: boolean,
-  setShowFilter: React.Dispatch<React.SetStateAction<boolean>>,
-  filterOptions: ProductFilter,
-  activeFilter: ProductFilter,
-  setActiveFilter: React.Dispatch<React.SetStateAction<ProductFilter>>,
-  sortSetting: SortSetting,
-  setSortSetting: React.Dispatch<React.SetStateAction<SortSetting>>
-) {
-  if (showFilter) {
-    return (
-      <FilterDrawer
-        showFilter={showFilter}
-        setShowFilter={setShowFilter}
-        filterOptions={filterOptions}
-        activeFilter={activeFilter}
-        setActiveFilter={setActiveFilter}
-        sortSetting={sortSetting}
-        setSortSetting={setSortSetting}
-      />
-    );
-  }
 }

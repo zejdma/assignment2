@@ -17,37 +17,6 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const products = useLoaderData<Product[]>();
   const featuredProduct = products.find((product) => product.featured === true);
-  const filterOptions: ProductFilter = {
-    filterCategories: getFilterCategories([
-      ...new Set(products.map((product) => product.category)),
-    ]),
-    priceRanges: [
-      {
-        from: 0,
-        to: 20,
-      },
-      {
-        from: 20,
-        to: 100,
-      },
-      {
-        from: 100,
-        to: 200,
-      },
-      {
-        from: 200,
-        to: null,
-      },
-    ],
-    selectedPriceRange: null,
-  };
-
-  const [activeFilter, setActiveFilter] = useState(filterOptions);
-
-  const [sortSetting, setSortSetting] = useState({
-    sortOption: SortOptions.name,
-    asc: true,
-  });
 
   return (
     <div className="my-8 space-y-8 ">
@@ -58,14 +27,7 @@ export default function Index() {
         <div></div>
       </div>
 
-      <ProductList
-        products={products}
-        filterOptions={filterOptions}
-        activeFilter={activeFilter}
-        setActiveFilter={setActiveFilter}
-        sortSetting={sortSetting}
-        setSortSetting={setSortSetting}
-      />
+      <ProductList products={products} />
     </div>
   );
 }

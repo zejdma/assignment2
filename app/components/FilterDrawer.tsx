@@ -1,5 +1,3 @@
-import { Product } from "~/types/product";
-import CartItem from "./CartItem";
 import Button from "./Button";
 import { ButtonVariant } from "~/enums/buttonVariant";
 import { useState } from "react";
@@ -17,21 +15,24 @@ interface PriceRange {
 export default function FilterDrawer({
   showFilter,
   setShowFilter,
-  filterOptions,
-  activeFilter,
-  setActiveFilter,
+  allCategories,
   sortSetting,
   setSortSetting,
+  categoryFilter,
+  setCategoryFilter,
+  priceRangeFilter,
+  setPriceRangeFilter,
 }: {
   showFilter: boolean;
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
-  filterOptions: ProductFilter;
-  activeFilter: ProductFilter;
-  setActiveFilter: React.Dispatch<React.SetStateAction<ProductFilter>>;
+  allCategories: string[];
   sortSetting: SortSetting;
   setSortSetting: React.Dispatch<React.SetStateAction<SortSetting>>;
+  categoryFilter: string[];
+  setCategoryFilter: React.Dispatch<React.SetStateAction<string[]>>;
+  priceRangeFilter: PriceRange | null;
+  setPriceRangeFilter: React.Dispatch<React.SetStateAction<PriceRange | null>>;
 }) {
-  const categories: string[] = ["1", "2", "3", "4", "5"];
   const priceRanges = [
     { id: 1, label: "0 - 20", min: 0, max: 20 },
     { id: 2, label: "21 - 100", min: 21, max: 100 },
@@ -41,14 +42,10 @@ export default function FilterDrawer({
 
   // Properties
 
-  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
-  const [selectedPriceRange, setSelectedPriceRange] =
-    useState<PriceRange | null>(null);
-
   // Handlers
 
   const handleCategoryChange = (category: string) => {
-    setCategoryFilters((prevFilters) =>
+    setCategoryFilter((prevFilters) =>
       prevFilters.includes(category)
         ? prevFilters.filter((filter) => filter !== category)
         : [...prevFilters, category]
@@ -56,16 +53,16 @@ export default function FilterDrawer({
   };
 
   const handlePriceRangeChange = (range: PriceRange) => {
-    setSelectedPriceRange(range);
+    setPriceRangeFilter(range);
   };
 
   const handleClear = () => {
-    setSelectedPriceRange(null);
-    setCategoryFilters([]);
     setSortSetting({
       sortOption: SortOptions.name,
       asc: true,
     });
+    setCategoryFilter([]);
+    setPriceRangeFilter(null);
   };
 
   // Return
@@ -106,7 +103,7 @@ export default function FilterDrawer({
         <div className="px-4 space-y-2">
           <p className="text-fontPrimary font-bold text-xl">Category</p>
           <div className="px-2">
-            {categories.map((category) => (
+            {allCategories.map((category) => (
               <div key={category} className="flex items-center">
                 <label
                   className="relative flex items-center p-3 rounded-full cursor-pointer"
@@ -117,7 +114,7 @@ export default function FilterDrawer({
                     className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
                     value={category}
                     onChange={() => handleCategoryChange(category)}
-                    checked={categoryFilters.includes(category)}
+                    checked={categoryFilter.includes(category)}
                   />
                   <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                     <img width={16} src="/public/icons/check.svg" />
@@ -140,17 +137,14 @@ export default function FilterDrawer({
           <p className="text-fontPrimary font-bold text-xl">Price Range</p>
           <div className="px-2">
             {priceRanges.map((range) => (
-              <div className="flex items-center">
-                <label
-                  key={range.id}
-                  className="relative flex items-center p-3 rounded-full cursor-pointer"
-                >
+              <div key={range.id} className="flex items-center">
+                <label className="relative flex items-center p-3 rounded-full cursor-pointer">
                   <input
                     type="radio"
                     name="priceRange"
                     value={range.label}
                     onChange={() => handlePriceRangeChange(range)}
-                    checked={selectedPriceRange?.id === range.id}
+                    checked={priceRangeFilter?.id === range.id}
                   />
 
                   <p className="pl-2 mt-px font-normal text-fontPrimary">
