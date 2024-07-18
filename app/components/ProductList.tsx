@@ -6,6 +6,13 @@ import { ButtonVariant } from "~/enums/buttonVariant";
 import { ProductFilter, SortSetting } from "~/types/productFilter";
 import FilterDrawer from "./FilterDrawer";
 
+interface PriceRange {
+  id: number;
+  label: string;
+  min: number;
+  max: number;
+}
+
 export default function ProductList({
   products,
   filterOptions,

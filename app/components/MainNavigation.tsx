@@ -13,13 +13,13 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
       >
         <img
           className="max-h-4 md:max-h-6 my-4 md:my-8"
-          src="./public/Logo.png"
+          src="/logo.png"
           alt="logo"
         ></img>
 
         <div className="static md:relative">
           <button onClick={() => setShowCart(!showCart)}>
-            <img width={32} src="/public/icons/shoppingCart.svg" />
+            <img width={32} src="/icons/shoppingCart.svg" />
           </button>
 
           <div className="">{getCart(showCart, setShowCart, cart)}</div>

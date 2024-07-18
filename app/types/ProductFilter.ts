@@ -1,8 +1,14 @@
 import { SortOptions } from "~/enums/sortOptions";
 
 export type ProductFilter = {
-  categories: string[];
+  filterCategories: FilterCategory[];
   priceRanges: PriceRange[];
+  selectedPriceRange: PriceRange | null;
+};
+
+export type FilterCategory = {
+  category: string;
+  selected: boolean;
 };
 
 export type PriceRange = {

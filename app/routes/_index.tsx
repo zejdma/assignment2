@@ -6,7 +6,7 @@ import ProductList from "~/components/ProductList";
 import { getStoredProducts } from "~/data/products";
 import { SortOptions } from "~/enums/sortOptions";
 import { Product } from "~/types/product";
-import { ProductFilter } from "~/types/productFilter";
+import { FilterCategory, ProductFilter } from "~/types/productFilter";
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -18,7 +18,9 @@ export default function Index() {
   const products = useLoaderData<Product[]>();
   const featuredProduct = products.find((product) => product.featured === true);
   const filterOptions: ProductFilter = {
-    categories: [...new Set(products.map((product) => product.category))],
+    filterCategories: getFilterCategories([
+      ...new Set(products.map((product) => product.category)),
+    ]),
     priceRanges: [
       {
         from: 0,
@@ -37,14 +39,10 @@ export default function Index() {
         to: null,
       },
     ],
+    selectedPriceRange: null,
   };
 
-  const emptyFilter: ProductFilter = {
-    categories: [],
-    priceRanges: [],
-  };
-
-  const [activeFilter, setActiveFilter] = useState(emptyFilter);
+  const [activeFilter, setActiveFilter] = useState(filterOptions);
 
   const [sortSetting, setSortSetting] = useState({
     sortOption: SortOptions.name,
@@ -81,4 +79,12 @@ function getFeaturedProduct(featuredProduct?: Product) {
 export async function loader() {
   const products = await getStoredProducts();
   return products;
+}
+
+function getFilterCategories(categories: string[]) {
+  var filterCategories: FilterCategory[] = [];
+  categories.forEach((category) => {
+    filterCategories.push({ category: category, selected: false });
+  });
+  return filterCategories;
 }

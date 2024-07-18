@@ -24,7 +24,7 @@ export default function CartDrawer({
               setShowCart(!showCart);
             }}
           >
-            <img width={24} src="/public/icons/xMark.svg" />
+            <img width={24} src="/icons/xMark.svg" />
           </button>
         </div>
 
