@@ -22,22 +22,18 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
             <img width={32} src="/icons/shoppingCart.svg" />
           </button>
 
-          <div className="">{getCart(showCart, setShowCart, cart)}</div>
+          <div className="">
+            {showCart && (
+              <CartDrawer
+                showCart={showCart}
+                setShowCart={setShowCart}
+                cart={cart}
+              />
+            )}
+          </div>
         </div>
       </div>
       <hr />
     </div>
   );
-}
-
-function getCart(
-  showCart: boolean,
-  setShowCart: React.Dispatch<React.SetStateAction<boolean>>,
-  cart: Product[]
-) {
-  if (showCart) {
-    return (
-      <CartDrawer showCart={showCart} setShowCart={setShowCart} cart={cart} />
-    );
-  }
 }
