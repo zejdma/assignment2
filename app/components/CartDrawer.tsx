@@ -12,6 +12,16 @@ export default function CartDrawer({
   setShowCart: React.Dispatch<React.SetStateAction<boolean>>;
   cart: Product[];
 }) {
+  const handleClearCart = async () => {
+    const formData = new FormData();
+    formData.append("_action", "clearCart");
+
+    await fetch("/", {
+      method: "POST",
+      body: formData,
+    });
+  };
+
   return (
     <div>
       <div className="z-20 fixed top-14 left-0 h-screen w-screen bg-background shadow-2xl">
@@ -38,7 +48,7 @@ export default function CartDrawer({
           <Button
             variant={ButtonVariant.secondary}
             title="CLEAR"
-            onClick={() => console.log("CLEAR")}
+            onClick={handleClearCart}
           />
         </div>
       </div>

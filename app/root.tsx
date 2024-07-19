@@ -12,6 +12,7 @@ import type { ActionFunctionArgs, LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
 import { Product } from "./types/product";
 import { storeCart, getStoredCart } from "./data/cart";
+import { useEffect, useState } from "react";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -23,8 +24,7 @@ export const links: LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const cart = useLoaderData<typeof loader>();
-  console.log("cart");
-  console.log(cart);
+
   return (
     <html lang="en">
       <head>
@@ -52,6 +52,7 @@ export default function App() {
 export async function loader() {
   try {
     const products = await getStoredCart();
+    console.log(products);
     return products;
   } catch (error) {
     console.log(error);
@@ -59,13 +60,20 @@ export async function loader() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const body = await request.json();
-  if (body === undefined) {
-    await storeCart("");
-  } else {
-    const existingCart = await getStoredCart();
-    const updatedCart = existingCart.concat(body);
-    await storeCart(updatedCart);
+  const formData = await request.formData();
+  const actionType = formData.get("_action");
+
+  if (actionType === "addProduct") {
+    const product: Product = JSON.parse(formData.get("product") as string);
+    if (product === undefined) {
+      await storeCart("");
+    } else {
+      const existingCart = await getStoredCart();
+      const updatedCart = existingCart.concat(product);
+      await storeCart(updatedCart);
+    }
+  } else if (actionType === "clearCart") {
+    await storeCart([]);
   }
   return null;
 }
