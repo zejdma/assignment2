@@ -2,6 +2,7 @@ import { Product } from "~/types/product";
 import CartItem from "./CartItem";
 import Button from "./Button";
 import { ButtonVariant } from "~/enums/buttonVariant";
+import { Form } from "@remix-run/react";
 
 export default function CartDrawer({
   showCart,
@@ -45,11 +46,13 @@ export default function CartDrawer({
         </div>
 
         <div className=" border-t-2 border-separator fixed bottom-0 w-screen flex justify-between gap-4 p-3">
-          <Button
-            variant={ButtonVariant.secondary}
-            title="CLEAR"
-            onClick={handleClearCart}
-          />
+          <Form className="w-full">
+            <Button
+              variant={ButtonVariant.secondary}
+              title="CLEAR"
+              onClick={handleClearCart}
+            />
+          </Form>
         </div>
       </div>
       <div className="z-10 fixed top-0 left-0 h-screen w-screen bg-fontSecondary bg-opacity-50"></div>

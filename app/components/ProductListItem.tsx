@@ -25,7 +25,7 @@ export default function ProductListItem({ product }: { product: Product }) {
         {bestSellerBadge(product.bestseller)}
 
         <div className="absolute bottom-0 w-full">
-          <Form method="post" style={{ display: "inline" }}>
+          <Form method="post">
             <Button
               variant={ButtonVariant.primary}
               title="ADD TO CART"

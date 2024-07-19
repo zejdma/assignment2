@@ -24,6 +24,7 @@ export const links: LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const cart = useLoaderData<typeof loader>();
+  const [localCart, setLocalCart] = useState<Product[]>(cart);
 
   return (
     <html lang="en">
@@ -74,6 +75,8 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   } else if (actionType === "clearCart") {
     await storeCart([]);
+  } else if (actionType === "loadCart") {
+    await storeCart(await getStoredCart());
   }
   return null;
 }
