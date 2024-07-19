@@ -7,14 +7,13 @@ export default function ProductListItem({ product }: { product: Product }) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log("Stringify");
-    console.log(JSON.stringify(product));
+    const formData = new FormData();
+    formData.append("_action", "addProduct");
+    formData.append("product", JSON.stringify(product));
+
     await fetch("/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(product),
+      body: formData,
     });
   };
 
