@@ -62,13 +62,10 @@ export async function action({ request }: ActionFunctionArgs) {
   const body = await request.json();
   if (body === undefined) {
     await storeCart("");
-    return null;
   } else {
     const existingCart = await getStoredCart();
     const updatedCart = existingCart.concat(body);
-    console.log("updatedCart");
-    console.log(updatedCart);
     await storeCart(updatedCart);
-    return null;
   }
+  return null;
 }

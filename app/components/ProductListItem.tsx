@@ -4,6 +4,20 @@ import { ButtonVariant } from "~/enums/buttonVariant";
 import { Form } from "@remix-run/react";
 
 export default function ProductListItem({ product }: { product: Product }) {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    console.log("Stringify");
+    console.log(JSON.stringify(product));
+    await fetch("/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    });
+  };
+
   return (
     <div className="space-y-2">
       <div className="relative">
@@ -13,24 +27,10 @@ export default function ProductListItem({ product }: { product: Product }) {
 
         <div className="absolute bottom-0 w-full">
           <Form method="post" style={{ display: "inline" }}>
-            <input
-              type="hidden"
-              name="product"
-              value={JSON.stringify({
-                product,
-              })}
-            />
             <Button
               variant={ButtonVariant.primary}
               title="ADD TO CART"
-              onClick={() => {
-                fetch("/", {
-                  method: "POST",
-                  body: JSON.stringify({
-                    product,
-                  }),
-                });
-              }}
+              onClick={handleSubmit}
             />
           </Form>
         </div>
