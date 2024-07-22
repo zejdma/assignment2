@@ -2,56 +2,76 @@ import Button from "./Button";
 import { ButtonVariant } from "~/enums/buttonVariant";
 import { useState } from "react";
 import { SortOptions } from "~/enums/sortOptions";
-import { ProductFilter, SortSetting } from "~/types/productFilter";
 import SortDropdown from "./SortDropdown";
-import { redirect, useNavigate } from "@remix-run/react";
+import { redirect, useNavigate, useSearchParams } from "@remix-run/react";
 import { priceRanges } from "~/constants/priceRanges";
 
-interface PriceRange {
-  id: number;
-  label: string;
-  min: number;
-  max: number;
+interface FiltersProps {
+  onFilterChange: (filters: {
+    kategorie: string[];
+    cenaKategorie: string;
+    sortField: string;
+    sortOrder: string;
+  }) => void;
 }
 
 export default function FilterDrawer({
   showFilter,
   setShowFilter,
   allCategories,
+  onFilterChange,
 }: {
   showFilter: boolean;
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
   allCategories: string[];
+  onFilterChange: (filters: FilterOptions) => void;
 }) {
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Properties
-  const [sortOption, setSortOption] = useState<SortOptions>(SortOptions.name);
-  const [sortASC, setSortASC] = useState<boolean>(true);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [selectedPriceRangeId, setSelectedPriceRangeId] = useState<string>("");
+  // Filter Properties
+  const [sortOption, setSortOption] = useState<SortOptions>(
+    getSortOption(searchParams.get("sortOption") ?? "")
+  );
+  const [sortASC, setSortASC] = useState<boolean>(
+    getSortASC(searchParams.get("sortASC") ?? "")
+  );
+  const [categories, setCategories] = useState<string[]>(
+    searchParams.getAll("categories") ?? []
+  );
+  const [selectedPriceRangeId, setSelectedPriceRangeId] = useState<string>(
+    searchParams.get("selectedPriceRangeId") ?? ""
+  );
+
+  function getSortOption(sortOption: string): SortOptions {
+    if (sortOption === "name") {
+      return SortOptions.name;
+    }
+    if (sortOption === "price") {
+      return SortOptions.price;
+    }
+    return SortOptions.name;
+  }
+
+  function getSortASC(sortASC: string): boolean {
+    if (sortASC === "true") {
+      return true;
+    }
+    if (sortASC === "false") {
+      return false;
+    }
+    return true;
+  }
 
   // Handlers
 
-  const handleFilterSave = async () => {
-    setShowFilter(false);
-
-    const params = new URLSearchParams();
-
-    params.set("sortOption", sortOption.toString());
-
-    params.set("sortASC", sortASC.toString());
-
-    categories.forEach((category) => {
-      params.set("categories", category);
-    });
-
-    params.set("selectedPriceRangeId", selectedPriceRangeId);
-
-    console.log(`/?${params.toString()}`);
-    await fetch(`/?${params.toString()}`);
-
-    navigate(`/?${params.toString()}`);
+  const handleFilterSave = (): void => {
+    const filters: FilterOptions = {
+      sortOption,
+      sortASC,
+      categories,
+      selectedPriceRangeId,
+    };
+    onFilterChange(filters);
   };
 
   const handleFilterCategoriesChange = (
@@ -121,7 +141,7 @@ export default function FilterDrawer({
                     checked={categories.includes(category)}
                   />
                   <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                    <img width={16} src="/public/icons/check.svg" />
+                    <img width={16} src="/icons/check.svg" />
                   </span>
                 </label>
                 <label

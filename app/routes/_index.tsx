@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import FeaturedProduct from "~/components/FeaturedProduct";
 import ProductList from "~/components/ProductList";
@@ -8,7 +8,6 @@ import { getStoredCart, storeCart } from "~/data/cart";
 import { getStoredProducts } from "~/data/products";
 import { SortOptions } from "~/enums/sortOptions";
 import { Product } from "~/types/product";
-import { FilterCategory, ProductFilter } from "~/types/productFilter";
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -17,12 +16,53 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const navigate = useNavigate();
+
   const { filteredProducts, products } = useLoaderData<{
     filteredProducts: Product[];
     products: Product[];
   }>();
 
   const featuredProduct = products.find((product) => product.featured === true);
+
+  function getFeaturedProduct(featuredProduct?: Product) {
+    if (featuredProduct !== undefined) {
+      return <FeaturedProduct featuredProduct={featuredProduct} />;
+    }
+  }
+
+  const [productFilter, setProductFilter] = useState<FilterOptions>({
+    sortOption: "name",
+    sortASC: true,
+    categories: [],
+    selectedPriceRangeId: "",
+  });
+
+  const handleFilterChange = async (filters: FilterOptions) => {
+    const params = new URLSearchParams();
+    filters.categories.forEach((category) =>
+      params.append("categories", category)
+    );
+    if (filters.selectedPriceRangeId)
+      params.set("selectedPriceRangeId", filters.selectedPriceRangeId);
+    params.set("sortOption", filters.sortOption);
+    params.set("sortASC", String(filters.sortASC));
+
+    setProductFilter(filters);
+
+    await fetch(`/?${params.toString()}`);
+    navigate(`/?${params.toString()}`);
+  };
+
+  const handleClearCart = async () => {
+    await fetch("/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ _action: "clearCart" }).toString(),
+    });
+  };
 
   return (
     <div className="my-8 space-y-8 ">
@@ -33,15 +73,13 @@ export default function Index() {
         <div></div>
       </div>
 
-      <ProductList filteredProducts={filteredProducts} products={products} />
+      <ProductList
+        filteredProducts={filteredProducts}
+        products={products}
+        onFilterChange={handleFilterChange}
+      />
     </div>
   );
-}
-
-function getFeaturedProduct(featuredProduct?: Product) {
-  if (featuredProduct !== undefined) {
-    return <FeaturedProduct featuredProduct={featuredProduct} />;
-  }
 }
 
 // Loader
@@ -79,14 +117,28 @@ export async function loader({ request }: { request: Request }) {
   filteredProducts.sort((a, b) => {
     switch (sortOption) {
       case SortOptions.name:
-        return sortASC
+        return sortASC == "true"
           ? a.name.localeCompare(b.name)
           : b.name.localeCompare(a.name);
-      case SortOptions.name:
-        return sortASC ? a.price - b.price : b.price - a.price;
+      case SortOptions.price:
+        console.log("sortASC ");
+        console.log(sortASC);
+        console.log("Cena 1: ");
+        console.log(a.price);
+        console.log("Cena 2: ");
+        console.log(b.price);
+
+        if (sortASC == "true") {
+          console.log("True Vysledek: ");
+          console.log(a.price - b.price);
+          return a.price - b.price;
+        } else {
+          console.log("False Vysledek: ");
+          console.log(b.price - a.price);
+          return b.price - a.price;
+        }
       default:
-      case SortOptions.name:
-        return sortASC
+        return sortASC == "true"
           ? a.name.localeCompare(b.name)
           : b.name.localeCompare(a.name);
     }

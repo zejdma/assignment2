@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { SortOptions } from "~/enums/sortOptions";
-import { SortSetting } from "~/types/productFilter";
 
 export default function SortDropdown({
   sortOption,

@@ -3,31 +3,27 @@ import ProductListItem from "./ProductListItem";
 import { useState } from "react";
 import Button from "./Button";
 import { ButtonVariant } from "~/enums/buttonVariant";
-import { ProductFilter, SortSetting } from "~/types/productFilter";
 import FilterDrawer from "./FilterDrawer";
 import { SortOptions } from "~/enums/sortOptions";
 
 export default function ProductList({
   filteredProducts,
   products,
+  onFilterChange,
 }: {
   filteredProducts: Product[];
   products: Product[];
+  onFilterChange: (filters: FilterOptions) => void;
 }) {
   const [showFilter, setShowFilter] = useState(false);
 
-  const [sortSetting, setSortSetting] = useState({
-    sortOption: SortOptions.name,
-    asc: true,
-  });
-
-  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
-  const [priceRangeFilter, setPriceRangeFilter] = useState<PriceRange | null>(
-    null
-  );
-
   const allCategories = [
-    ...new Set(products.map((product) => product.category)),
+    ...new Set(
+      products
+        .sort((a, b) => a.category.localeCompare(b.category))
+
+        .map((product) => product.category)
+    ),
   ];
 
   return (
@@ -52,6 +48,7 @@ export default function ProductList({
           showFilter={showFilter}
           setShowFilter={setShowFilter}
           allCategories={allCategories}
+          onFilterChange={onFilterChange}
         />
       )}
 
