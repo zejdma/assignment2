@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SortOptions } from "~/enums/sortOptions";
 import { ProductFilter, SortSetting } from "~/types/productFilter";
 import SortDropdown from "./SortDropdown";
+import { redirect, useNavigate } from "@remix-run/react";
 
 interface PriceRange {
   id: number;
@@ -33,16 +34,57 @@ export default function FilterDrawer({
   priceRangeFilter: PriceRange | null;
   setPriceRangeFilter: React.Dispatch<React.SetStateAction<PriceRange | null>>;
 }) {
+  const navigate = useNavigate();
+
   const priceRanges = [
     { id: 1, label: "0 - 20", min: 0, max: 20 },
     { id: 2, label: "21 - 100", min: 21, max: 100 },
     { id: 3, label: "101 - 200", min: 101, max: 200 },
     { id: 4, label: "200 +", min: 201, max: Infinity },
   ];
+  interface FiltersProps {
+    onFilterChange: (filters: { categories: string[] }) => void;
+  }
 
   // Properties
+  const [categories, setCategories] = useState<string[]>([]);
 
   // Handlers
+
+  const handleFilterChange = async () => {
+    const params = new URLSearchParams();
+    categories.forEach((category) => {
+      params.set("categories", category);
+    });
+
+    const response = await fetch(`/?${params.toString()}`);
+    const data = await response.json();
+  };
+
+  const handleFilterCategoriesChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setCategories((prevCategories) =>
+      prevCategories.includes(value)
+        ? prevCategories.filter((category) => category !== value)
+        : [...prevCategories, value]
+    );
+  };
+  const handleFilterSave = async () => {
+    () => setShowFilter(false);
+
+    console.log("Save clicked");
+    const params = new URLSearchParams();
+    categories.forEach((category) => {
+      params.set("categories", category);
+    });
+
+    console.log(`/?${params.toString()}`);
+    await fetch(`/?${params.toString()}`);
+
+    navigate(`/?${params.toString()}`);
+  };
 
   const handleCategoryChange = (category: string) => {
     setCategoryFilter((prevFilters) =>
@@ -113,8 +155,8 @@ export default function FilterDrawer({
                     type="checkbox"
                     className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
                     value={category}
-                    onChange={() => handleCategoryChange(category)}
-                    checked={categoryFilter.includes(category)}
+                    onChange={handleFilterCategoriesChange}
+                    checked={categories.includes(category)}
                   />
                   <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                     <img width={16} src="/public/icons/check.svg" />
@@ -168,7 +210,7 @@ export default function FilterDrawer({
           <Button
             variant={ButtonVariant.primary}
             title="SAVE"
-            onClick={() => setShowFilter(false)}
+            onClick={handleFilterSave}
           />
         </div>
       </div>

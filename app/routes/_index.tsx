@@ -16,7 +16,13 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  // const { filteredProducts, products } = useLoaderData<{
+  //   filteredProducts: Product[];
+  //   products: Product[];
+  // }>();
+
   const products = useLoaderData<Product[]>();
+
   const featuredProduct = products.find((product) => product.featured === true);
 
   return (
@@ -28,7 +34,7 @@ export default function Index() {
         <div></div>
       </div>
 
-      <ProductList products={products} />
+      <ProductList filteredProducts={products} products={products} />
     </div>
   );
 }
@@ -39,9 +45,26 @@ function getFeaturedProduct(featuredProduct?: Product) {
   }
 }
 
-export async function loader() {
+// Loader
+
+export async function loader({ request }: { request: Request }) {
   const products = await getStoredProducts();
-  return products;
+
+  const url = new URL(request.url);
+  const searchParams = url.searchParams;
+
+  const filterCategories = searchParams.getAll("categories");
+
+  let filteredProducts: Product[] = products;
+
+  if (filterCategories.length > 0) {
+    filteredProducts = filteredProducts.filter((product) =>
+      filterCategories.some((category) => product.category === category)
+    );
+  }
+
+  // return [filteredProducts, products];
+  return filteredProducts;
 }
 
 function getFilterCategories(categories: string[]) {

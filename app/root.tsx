@@ -24,7 +24,6 @@ export const links: LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const cart = useLoaderData<typeof loader>();
-  const [localCart, setLocalCart] = useState<Product[]>(cart);
 
   return (
     <html lang="en">

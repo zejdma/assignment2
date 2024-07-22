@@ -7,7 +7,13 @@ import { ProductFilter, SortSetting } from "~/types/productFilter";
 import FilterDrawer from "./FilterDrawer";
 import { SortOptions } from "~/enums/sortOptions";
 
-export default function ProductList({ products }: { products: Product[] }) {
+export default function ProductList({
+  filteredProducts,
+  products,
+}: {
+  filteredProducts: Product[];
+  products: Product[];
+}) {
   const [showFilter, setShowFilter] = useState(false);
 
   const [sortSetting, setSortSetting] = useState({
@@ -24,15 +30,15 @@ export default function ProductList({ products }: { products: Product[] }) {
     ...new Set(products.map((product) => product.category)),
   ];
 
-  const filteredProducts = products.filter((product) => {
-    const categoryMatch =
-      categoryFilter.length === 0 || categoryFilter.includes(product.category);
-    const priceMatch =
-      !priceRangeFilter ||
-      (product.price >= priceRangeFilter.min &&
-        product.price <= priceRangeFilter.max);
-    return categoryMatch && priceMatch;
-  });
+  // const filteredProducts = products.filter((product) => {
+  //   const categoryMatch =
+  //     categoryFilter.length === 0 || categoryFilter.includes(product.category);
+  //   const priceMatch =
+  //     !priceRangeFilter ||
+  //     (product.price >= priceRangeFilter.min &&
+  //       product.price <= priceRangeFilter.max);
+  //   return categoryMatch && priceMatch;
+  // });
 
   const getSortedProducts = () => {
     return filteredProducts.sort((a, b) => {
