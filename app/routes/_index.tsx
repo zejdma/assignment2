@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import FeaturedProduct from "~/components/FeaturedProduct";
 import ProductList from "~/components/ProductList";
+import { priceRanges } from "~/constants/priceRanges";
 import { getStoredCart, storeCart } from "~/data/cart";
 import { getStoredProducts } from "~/data/products";
 import { SortOptions } from "~/enums/sortOptions";
@@ -16,12 +17,10 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  // const { filteredProducts, products } = useLoaderData<{
-  //   filteredProducts: Product[];
-  //   products: Product[];
-  // }>();
-
-  const products = useLoaderData<Product[]>();
+  const { filteredProducts, products } = useLoaderData<{
+    filteredProducts: Product[];
+    products: Product[];
+  }>();
 
   const featuredProduct = products.find((product) => product.featured === true);
 
@@ -34,7 +33,7 @@ export default function Index() {
         <div></div>
       </div>
 
-      <ProductList filteredProducts={products} products={products} />
+      <ProductList filteredProducts={filteredProducts} products={products} />
     </div>
   );
 }
@@ -53,7 +52,10 @@ export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
+  const sortOption = searchParams.get("sortOption") ?? "name";
+  const sortASC = searchParams.get("sortASC") ?? "true";
   const filterCategories = searchParams.getAll("categories");
+  const selectedPriceRangeId = searchParams.get("selectedPriceRangeId");
 
   let filteredProducts: Product[] = products;
 
@@ -63,16 +65,34 @@ export async function loader({ request }: { request: Request }) {
     );
   }
 
-  // return [filteredProducts, products];
-  return filteredProducts;
-}
+  const priceRange = priceRanges.find(
+    (priceRange) => priceRange.id === selectedPriceRangeId
+  );
 
-function getFilterCategories(categories: string[]) {
-  var filterCategories: FilterCategory[] = [];
-  categories.forEach((category) => {
-    filterCategories.push({ category: category, selected: false });
+  if (priceRange !== undefined) {
+    filteredProducts = filteredProducts.filter(
+      (product) =>
+        product.price >= priceRange.min && product.price < priceRange.max
+    );
+  }
+
+  filteredProducts.sort((a, b) => {
+    switch (sortOption) {
+      case SortOptions.name:
+        return sortASC
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
+      case SortOptions.name:
+        return sortASC ? a.price - b.price : b.price - a.price;
+      default:
+      case SortOptions.name:
+        return sortASC
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
+    }
   });
-  return filterCategories;
+
+  return { filteredProducts, products };
 }
 
 export async function action({ request }: { request: Request }) {

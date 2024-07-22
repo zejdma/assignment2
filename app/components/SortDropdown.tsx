@@ -3,11 +3,15 @@ import { SortOptions } from "~/enums/sortOptions";
 import { SortSetting } from "~/types/productFilter";
 
 export default function SortDropdown({
-  sortSetting,
-  setSortSetting,
+  sortOption,
+  setSortOption,
+  sortASC,
+  setSortASC,
 }: {
-  sortSetting: SortSetting;
-  setSortSetting: React.Dispatch<React.SetStateAction<SortSetting>>;
+  sortOption: SortOptions;
+  setSortOption: React.Dispatch<React.SetStateAction<SortOptions>>;
+  sortASC: boolean;
+  setSortASC: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,19 +23,16 @@ export default function SortDropdown({
     <div className="relative" id="dropdownButton">
       <div className=" cursor-pointer flex justify-between items-center">
         <div className="px-2 py-2 cursor-pointer flex gap-2" onClick={toggle}>
-          {sortSetting.sortOption}
+          {sortOption}
 
           <img width={16} src="/icons/chevronDown.svg" />
         </div>
         <div
           onClick={() => {
-            setSortSetting({
-              sortOption: sortSetting.sortOption,
-              asc: !sortSetting.asc,
-            });
+            setSortASC(!sortASC);
           }}
         >
-          {sortSetting.asc ? (
+          {sortASC ? (
             <img width={24} src="/icons/barsArrowDown.svg" />
           ) : (
             <img width={24} src="/icons/barsArrowUp.svg" />
@@ -47,10 +48,7 @@ export default function SortDropdown({
             <div
               key={option}
               onClick={() => {
-                setSortSetting({
-                  sortOption: option,
-                  asc: sortSetting.asc,
-                });
+                setSortOption(option);
 
                 setIsOpen(false);
               }}

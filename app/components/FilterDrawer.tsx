@@ -5,6 +5,7 @@ import { SortOptions } from "~/enums/sortOptions";
 import { ProductFilter, SortSetting } from "~/types/productFilter";
 import SortDropdown from "./SortDropdown";
 import { redirect, useNavigate } from "@remix-run/react";
+import { priceRanges } from "~/constants/priceRanges";
 
 interface PriceRange {
   id: number;
@@ -17,48 +18,40 @@ export default function FilterDrawer({
   showFilter,
   setShowFilter,
   allCategories,
-  sortSetting,
-  setSortSetting,
-  categoryFilter,
-  setCategoryFilter,
-  priceRangeFilter,
-  setPriceRangeFilter,
 }: {
   showFilter: boolean;
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
   allCategories: string[];
-  sortSetting: SortSetting;
-  setSortSetting: React.Dispatch<React.SetStateAction<SortSetting>>;
-  categoryFilter: string[];
-  setCategoryFilter: React.Dispatch<React.SetStateAction<string[]>>;
-  priceRangeFilter: PriceRange | null;
-  setPriceRangeFilter: React.Dispatch<React.SetStateAction<PriceRange | null>>;
 }) {
   const navigate = useNavigate();
 
-  const priceRanges = [
-    { id: 1, label: "0 - 20", min: 0, max: 20 },
-    { id: 2, label: "21 - 100", min: 21, max: 100 },
-    { id: 3, label: "101 - 200", min: 101, max: 200 },
-    { id: 4, label: "200 +", min: 201, max: Infinity },
-  ];
-  interface FiltersProps {
-    onFilterChange: (filters: { categories: string[] }) => void;
-  }
-
   // Properties
+  const [sortOption, setSortOption] = useState<SortOptions>(SortOptions.name);
+  const [sortASC, setSortASC] = useState<boolean>(true);
   const [categories, setCategories] = useState<string[]>([]);
+  const [selectedPriceRangeId, setSelectedPriceRangeId] = useState<string>("");
 
   // Handlers
 
-  const handleFilterChange = async () => {
+  const handleFilterSave = async () => {
+    setShowFilter(false);
+
     const params = new URLSearchParams();
+
+    params.set("sortOption", sortOption.toString());
+
+    params.set("sortASC", sortASC.toString());
+
     categories.forEach((category) => {
       params.set("categories", category);
     });
 
-    const response = await fetch(`/?${params.toString()}`);
-    const data = await response.json();
+    params.set("selectedPriceRangeId", selectedPriceRangeId);
+
+    console.log(`/?${params.toString()}`);
+    await fetch(`/?${params.toString()}`);
+
+    navigate(`/?${params.toString()}`);
   };
 
   const handleFilterCategoriesChange = (
@@ -71,41 +64,8 @@ export default function FilterDrawer({
         : [...prevCategories, value]
     );
   };
-  const handleFilterSave = async () => {
-    () => setShowFilter(false);
 
-    console.log("Save clicked");
-    const params = new URLSearchParams();
-    categories.forEach((category) => {
-      params.set("categories", category);
-    });
-
-    console.log(`/?${params.toString()}`);
-    await fetch(`/?${params.toString()}`);
-
-    navigate(`/?${params.toString()}`);
-  };
-
-  const handleCategoryChange = (category: string) => {
-    setCategoryFilter((prevFilters) =>
-      prevFilters.includes(category)
-        ? prevFilters.filter((filter) => filter !== category)
-        : [...prevFilters, category]
-    );
-  };
-
-  const handlePriceRangeChange = (range: PriceRange) => {
-    setPriceRangeFilter(range);
-  };
-
-  const handleClear = () => {
-    setSortSetting({
-      sortOption: SortOptions.name,
-      asc: true,
-    });
-    setCategoryFilter([]);
-    setPriceRangeFilter(null);
-  };
+  const handleClear = () => {};
 
   // Return
 
@@ -134,8 +94,10 @@ export default function FilterDrawer({
           <div className="px-2 ">
             {/* {sortDropdown(sortSetting, setSortSetting)} */}
             <SortDropdown
-              sortSetting={sortSetting}
-              setSortSetting={setSortSetting}
+              sortOption={sortOption}
+              setSortOption={setSortOption}
+              sortASC={sortASC}
+              setSortASC={setSortASC}
             />
           </div>
         </div>
@@ -185,8 +147,8 @@ export default function FilterDrawer({
                     type="radio"
                     name="priceRange"
                     value={range.label}
-                    onChange={() => handlePriceRangeChange(range)}
-                    checked={priceRangeFilter?.id === range.id}
+                    onChange={() => setSelectedPriceRangeId(range.id)}
+                    checked={selectedPriceRangeId === range.id}
                   />
 
                   <p className="pl-2 mt-px font-normal text-fontPrimary">

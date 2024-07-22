@@ -30,34 +30,6 @@ export default function ProductList({
     ...new Set(products.map((product) => product.category)),
   ];
 
-  // const filteredProducts = products.filter((product) => {
-  //   const categoryMatch =
-  //     categoryFilter.length === 0 || categoryFilter.includes(product.category);
-  //   const priceMatch =
-  //     !priceRangeFilter ||
-  //     (product.price >= priceRangeFilter.min &&
-  //       product.price <= priceRangeFilter.max);
-  //   return categoryMatch && priceMatch;
-  // });
-
-  const getSortedProducts = () => {
-    return filteredProducts.sort((a, b) => {
-      switch (sortSetting.sortOption) {
-        case SortOptions.name:
-          return sortSetting.asc
-            ? a.name.localeCompare(b.name)
-            : b.name.localeCompare(a.name);
-        case SortOptions.name:
-          return sortSetting.asc ? a.price - b.price : b.price - a.price;
-        default:
-        case SortOptions.name:
-          return sortSetting.asc
-            ? a.name.localeCompare(b.name)
-            : b.name.localeCompare(a.name);
-      }
-    });
-  };
-
   return (
     <div className="space-y-8">
       <div
@@ -80,16 +52,10 @@ export default function ProductList({
           showFilter={showFilter}
           setShowFilter={setShowFilter}
           allCategories={allCategories}
-          sortSetting={sortSetting}
-          setSortSetting={setSortSetting}
-          categoryFilter={categoryFilter}
-          setCategoryFilter={setCategoryFilter}
-          priceRangeFilter={priceRangeFilter}
-          setPriceRangeFilter={setPriceRangeFilter}
         />
       )}
 
-      {getSortedProducts().map((product) => (
+      {filteredProducts.map((product) => (
         <ProductListItem key={product.name} product={product} />
       ))}
 
