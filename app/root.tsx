@@ -53,7 +53,6 @@ export default function App() {
 export async function loader() {
   try {
     const products = await getStoredCart();
-    console.log(products);
     return products;
   } catch (error) {
     console.log(error);

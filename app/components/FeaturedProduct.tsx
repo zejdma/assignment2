@@ -9,6 +9,19 @@ export default function FeaturedProduct({
 }) {
   const featuredAbout: string = "About" + featuredProduct?.name || "";
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("_action", "addProduct");
+    formData.append("product", JSON.stringify(featuredProduct));
+
+    await fetch("/", {
+      method: "POST",
+      body: formData,
+    });
+  };
+
   return (
     <>
       <p className="text-fontPrimary font-bold text-3xl">
@@ -27,7 +40,7 @@ export default function FeaturedProduct({
       <Button
         variant={ButtonVariant.primary}
         title="ADD TO CART"
-        onClick={() => console.log("ok")}
+        onClick={handleSubmit}
       />
 
       <div className="space-y-2">
