@@ -23,7 +23,7 @@ export default function FeaturedProduct({
   };
 
   return (
-    <>
+    <div className="container mx-auto space-y-8">
       <p className="text-fontPrimary font-bold text-3xl">
         {featuredProduct?.name || ""}
       </p>
@@ -43,48 +43,56 @@ export default function FeaturedProduct({
         onClick={handleSubmit}
       />
 
-      <div className="space-y-2">
-        <p className="text-fontPrimary text-xl font-bold">{featuredAbout}</p>
-        <p className="text-fontSecondary text-lg font-normal">
-          {featuredProduct?.details?.description}
-        </p>
-      </div>
-
-      <div className="space-y-2">
-        <p className="text-fontPrimary text-xl font-bold">People also buy</p>
-        <div className="grid grid-cols-3 gap-6 content-end">
-          {featuredProduct?.details?.recommendations.map((recommendation) => (
-            <img
-              className="object-cover h-32"
-              key={recommendation.src}
-              src={recommendation.src}
-              alt={recommendation.alt}
-            ></img>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <p className="text-fontPrimary text-xl font-bold">Details</p>
-        <div className="space-y-0">
+      <div className="block md:flex md:justify-between md:items-start mb-8 md:space-x-8">
+        <div className="space-y-2">
+          <p className="text-fontPrimary text-xl font-bold">{featuredAbout}</p>
           <p className="text-fontSecondary text-lg font-normal">
-            {"Price: " +
-              featuredProduct?.price +
-              " " +
-              featuredProduct?.currency}
-          </p>
-          <p className="text-fontSecondary text-lg font-normal">
-            {"Resolution: " +
-              featuredProduct?.details?.dimmentions.width +
-              " x " +
-              featuredProduct?.details?.dimmentions.height}
-          </p>
-          <p className="text-fontSecondary text-lg font-normal">
-            {"Size: " + (featuredProduct?.details?.size ?? 0) / 1000 + "MB"}
+            {featuredProduct?.details?.description}
           </p>
         </div>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <p className="text-fontPrimary text-xl font-bold">
+              People also buy
+            </p>
+            <div className="grid grid-cols-3 gap-6 content-end">
+              {featuredProduct?.details?.recommendations.map(
+                (recommendation) => (
+                  <img
+                    className="object-cover h-32"
+                    key={recommendation.src}
+                    src={recommendation.src}
+                    alt={recommendation.alt}
+                  ></img>
+                )
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-fontPrimary text-xl font-bold">Details</p>
+            <div className="space-y-0">
+              <p className="text-fontSecondary text-lg font-normal">
+                {"Price: " +
+                  featuredProduct?.price +
+                  " " +
+                  featuredProduct?.currency}
+              </p>
+              <p className="text-fontSecondary text-lg font-normal">
+                {"Resolution: " +
+                  featuredProduct?.details?.dimmentions.width +
+                  " x " +
+                  featuredProduct?.details?.dimmentions.height}
+              </p>
+              <p className="text-fontSecondary text-lg font-normal">
+                {"Size: " + (featuredProduct?.details?.size ?? 0) / 1000 + "MB"}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

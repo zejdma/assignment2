@@ -54,16 +54,6 @@ export default function Index() {
     navigate(`/?${params.toString()}`);
   };
 
-  const handleClearCart = async () => {
-    await fetch("/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ _action: "clearCart" }).toString(),
-    });
-  };
-
   return (
     <div className="my-8 space-y-8 ">
       {getFeaturedProduct(featuredProduct)}

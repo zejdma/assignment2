@@ -27,7 +27,7 @@ export default function FilterDrawer({
   onFilterChange: (filters: FilterOptions) => void;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigate = useNavigate();
   // Filter Properties
   const [sortOption, setSortOption] = useState<SortOptions>(
     getSortOption(searchParams.get("sortOption") ?? "")
@@ -85,7 +85,13 @@ export default function FilterDrawer({
     );
   };
 
-  const handleClear = () => {};
+  const handleClear = () => {
+    setSortOption(getSortOption(""));
+    setSortASC(getSortASC(searchParams.get("sortASC") ?? ""));
+    setCategories(searchParams.getAll("categories") ?? []);
+    setSelectedPriceRangeId(searchParams.get("selectedPriceRangeId") ?? "");
+    navigate(`/`);
+  };
 
   // Return
 
