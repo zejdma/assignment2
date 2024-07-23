@@ -215,18 +215,6 @@ export default function ProductList({
           ))}
         </div>
       </div>
-      <div
-        className="w-full flex justify-center 
-                items-center gap-4"
-      >
-        <img width={16} src="/icons/chevronLeft.svg" />
-
-        <p className="text-base font-semibold text-fontPrimary">1</p>
-        <p className="text-base font-normal text-fontSecondary">2</p>
-        <p className="text-base font-normal text-fontSecondary">3</p>
-
-        <img width={16} src="/icons/chevronRight.svg" />
-      </div>
     </div>
   );
 }

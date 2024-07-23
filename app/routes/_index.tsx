@@ -1,7 +1,8 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { json, useLoaderData, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import FeaturedProduct from "~/components/FeaturedProduct";
+import Pagination from "~/components/Pagination";
 import ProductList from "~/components/ProductList";
 import { priceRanges } from "~/constants/priceRanges";
 import { getStoredCart, storeCart } from "~/data/cart";
@@ -18,10 +19,13 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const navigate = useNavigate();
 
-  const { filteredProducts, products } = useLoaderData<{
-    filteredProducts: Product[];
-    products: Product[];
-  }>();
+  const { filteredProducts, products, totalPages, currentPage } =
+    useLoaderData<{
+      filteredProducts: Product[];
+      products: Product[];
+      totalPages: number;
+      currentPage: number;
+    }>();
 
   const featuredProduct = products.find((product) => product.featured === true);
 
@@ -68,13 +72,15 @@ export default function Index() {
         products={products}
         onFilterChange={handleFilterChange}
       />
+      <Pagination currentPage={currentPage} totalPages={totalPages} />
     </div>
   );
 }
 
-// Loader
+// MARK: - LOADER
 
 export async function loader({ request }: { request: Request }) {
+  // Params
   const products = await getStoredProducts();
 
   const url = new URL(request.url);
@@ -85,14 +91,21 @@ export async function loader({ request }: { request: Request }) {
   const filterCategories = searchParams.getAll("categories");
   const selectedPriceRangeId = searchParams.get("selectedPriceRangeId");
 
+  const itemsPerPage = 6;
+
+  const paramPage: string = searchParams.get("page") || "1";
+  const currentPage: number = paramPage === "NaN" ? 1 : parseInt(paramPage);
+
   let filteredProducts: Product[] = products;
 
+  // Filtering by category
   if (filterCategories.length > 0) {
     filteredProducts = filteredProducts.filter((product) =>
       filterCategories.some((category) => product.category === category)
     );
   }
 
+  // Filtering by price range
   const priceRange = priceRanges.find(
     (priceRange) => priceRange.id === selectedPriceRangeId
   );
@@ -104,7 +117,8 @@ export async function loader({ request }: { request: Request }) {
     );
   }
 
-  filteredProducts.sort((a, b) => {
+  // Sorting
+  filteredProducts = filteredProducts.sort((a, b) => {
     switch (sortOption) {
       case SortOptions.name:
         return sortASC == "true"
@@ -134,7 +148,15 @@ export async function loader({ request }: { request: Request }) {
     }
   });
 
-  return { filteredProducts, products };
+  // Pagination
+  const totalItems = filteredProducts.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  filteredProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  return { filteredProducts, products, totalPages, currentPage };
 }
 
 export async function action({ request }: { request: Request }) {
