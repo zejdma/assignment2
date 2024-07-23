@@ -105,7 +105,7 @@ export default function ProductList({
           <p className="text-lg font-normal">/</p>
           <p className="text-lg font-bold">Premium Photos</p>
         </div>
-        <div className="md:hidden">
+        <div className="block md:hidden">
           <button onClick={() => setShowFilter(!showFilter)}>
             <img width={24} src="/icons/funnel.svg" />
           </button>
@@ -120,8 +120,8 @@ export default function ProductList({
           onFilterChange={onFilterChange}
         />
       )}
-      <div className="sm:hidden mx-auto block md:flex md:justify-between md:items-start mb-8 md:space-x-16">
-        <div className="block md:w-1/4 space-y-4">
+      <div className=" mx-auto block md:flex md:justify-between md:items-start mb-8 md:space-x-16">
+        <div className="hidden md:block md:w-1/4 space-y-4">
           {/* Sort section */}
 
           <div className="space-y-2">

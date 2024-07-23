@@ -12,7 +12,6 @@ import type { ActionFunctionArgs, LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
 import { Product } from "./types/product";
 import { storeCart, getStoredCart } from "./data/cart";
-import { useEffect, useState } from "react";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
