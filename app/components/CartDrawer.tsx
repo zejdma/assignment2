@@ -39,7 +39,7 @@ export default function CartDrawer({
           </button>
         </div>
 
-        <div className="p-4 pb-2">
+        <div className="p-4 pb-2 space-y-4">
           {cart.map((cartItem) => (
             <CartItem key={cartItem.name} cartItem={cartItem} />
           ))}

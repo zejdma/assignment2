@@ -19,12 +19,12 @@ export default function ProductListItem({ product }: { product: Product }) {
 
   return (
     <div className="space-y-2">
-      <div className="relative">
+      <div className="relative group ">
         {productImage(product)}
 
         {bestSellerBadge(product.bestseller)}
 
-        <div className="absolute bottom-0 w-full">
+        <div className="absolute bottom-0 w-full transform sm:hidden group-hover:block">
           <Form method="post">
             <Button
               variant={ButtonVariant.primary}
