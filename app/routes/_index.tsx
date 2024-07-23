@@ -125,20 +125,9 @@ export async function loader({ request }: { request: Request }) {
           ? a.name.localeCompare(b.name)
           : b.name.localeCompare(a.name);
       case SortOptions.price:
-        console.log("sortASC ");
-        console.log(sortASC);
-        console.log("Cena 1: ");
-        console.log(a.price);
-        console.log("Cena 2: ");
-        console.log(b.price);
-
         if (sortASC == "true") {
-          console.log("True Vysledek: ");
-          console.log(a.price - b.price);
           return a.price - b.price;
         } else {
-          console.log("False Vysledek: ");
-          console.log(b.price - a.price);
           return b.price - a.price;
         }
       default:
