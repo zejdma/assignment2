@@ -28,7 +28,15 @@ export default function FeaturedProduct({
         {featuredProduct?.name || ""}
       </p>
 
-      <div className="relative">
+      <div className="relative group">
+        <div className="absolute bottom-0 w-full transform md:visible hidden md:group-hover:block">
+          <Button
+            variant={ButtonVariant.primary}
+            title="ADD TO CART"
+            onClick={handleSubmit}
+          />
+        </div>
+
         {typeof featuredProduct != "undefined"
           ? FeaturedImage(featuredProduct)
           : null}
@@ -37,11 +45,13 @@ export default function FeaturedProduct({
         </p>
       </div>
 
-      <Button
-        variant={ButtonVariant.primary}
-        title="ADD TO CART"
-        onClick={handleSubmit}
-      />
+      <div className="w-full sm:visible md:hidden">
+        <Button
+          variant={ButtonVariant.primary}
+          title="ADD TO CART"
+          onClick={handleSubmit}
+        />
+      </div>
 
       <div className="block md:flex md:justify-between md:items-start mb-8 md:space-x-8">
         <div className="space-y-2">
