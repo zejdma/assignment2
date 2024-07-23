@@ -3,6 +3,9 @@ import CartDropdown from "./CartDrawer";
 import { Product } from "~/types/product";
 import CartDrawer from "./CartDrawer";
 import { Form } from "@remix-run/react";
+import CartItem from "./CartItem";
+import Button from "./Button";
+import { ButtonVariant } from "~/enums/buttonVariant";
 
 export default function MainNavigation({ cart }: { cart: Product[] }) {
   const [showCart, setShowCart] = useState(false);
@@ -18,7 +21,15 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
       body: formData,
     });
   };
+  const handleClearCart = async () => {
+    const formData = new FormData();
+    formData.append("_action", "clearCart");
 
+    await fetch("/", {
+      method: "POST",
+      body: formData,
+    });
+  };
   return (
     <div className="divide-y-4 divide-separator">
       <div
@@ -38,13 +49,50 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
             </button>
           </Form>
 
-          <div className="">
+          <div className="sm:hidden">
             {showCart && (
               <CartDrawer
                 showCart={showCart}
                 setShowCart={setShowCart}
                 cart={cart}
               />
+            )}
+          </div>
+
+          <div className="hidden sm:flex">
+            {showCart && (
+              <div>
+                <div className="z-20 absolute top-16 right-[-24px] w-[500px] border-4 border-separator bg-background shadow-xl">
+                  <div className="p-4 pb-2 flex justify-between items-center">
+                    <p className="text-fontPrimary font-bold text-md">Cart</p>
+
+                    <button
+                      className="text-fontPrimary"
+                      onClick={() => {
+                        setShowCart(!showCart);
+                      }}
+                    >
+                      <img width={16} src="/icons/xMark.svg" />
+                    </button>
+                  </div>
+
+                  <div className="px-4 space-y-2 divide-y-2 divide-separator">
+                    <div className="pb-4 space-y-2">
+                      {cart.map((cartItem) => (
+                        <CartItem key={cartItem.name} cartItem={cartItem} />
+                      ))}
+                    </div>
+
+                    <Form className="pb-4 w-full">
+                      <Button
+                        variant={ButtonVariant.secondary}
+                        title="CLEAR"
+                        onClick={handleClearCart}
+                      />
+                    </Form>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>
