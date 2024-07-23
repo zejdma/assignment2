@@ -78,7 +78,7 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
             </button>
           </Form>
 
-          <div className="sm:hidden">
+          <div className="sm:hidden" ref={dropdownRef}>
             {showCart && (
               <CartDrawer
                 showCart={showCart}

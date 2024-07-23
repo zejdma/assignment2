@@ -40,7 +40,7 @@ export default function FeaturedProduct({
         {typeof featuredProduct != "undefined"
           ? FeaturedImage(featuredProduct)
           : null}
-        <p className="absolute bottom-0 left-0 text-fontPrimary text-sm md:text-xl font-bold py-4 px-8 bg-background">
+        <p className="absolute bottom-0 left-0 text-fontPrimary text-sm md:text-xl font-bold py-3 px-8 bg-background md:group-hover:hidden">
           Photo of the day
         </p>
       </div>
