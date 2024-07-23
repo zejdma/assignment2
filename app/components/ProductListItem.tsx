@@ -36,8 +36,10 @@ export default function ProductListItem({ product }: { product: Product }) {
       </div>
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-2xl font-bold text-fontPrimary">{product.name}</p>
-          <p className="text-xl font-normal text-fontSecondary">
+          <p className="sm:text-base font-bold text-fontPrimary">
+            {product.name}
+          </p>
+          <p className="sm:text-base text-xl font-normal text-fontSecondary">
             {product.price + " " + product.currency}
           </p>
         </div>
