@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import CartDropdown from "./CartDrawer";
 import { Product } from "~/types/product";
 import CartDrawer from "./CartDrawer";
@@ -30,6 +30,35 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
       body: formData,
     });
   };
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const toggleDropdown = () => {
+    setShowCart(!setShowCart);
+  };
+
+  const closeDropdown = () => {
+    setShowCart(false);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      closeDropdown();
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener when the component mounts
+    document.addEventListener("mousedown", handleClickOutside);
+    // Remove event listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="divide-y-4 divide-separator">
       <div
@@ -59,7 +88,7 @@ export default function MainNavigation({ cart }: { cart: Product[] }) {
             )}
           </div>
 
-          <div className="hidden sm:flex">
+          <div className="hidden sm:flex" ref={dropdownRef}>
             {showCart && (
               <div>
                 <div className="z-20 absolute top-16 right-[-24px] w-[500px] border-4 border-separator bg-background shadow-xl">
